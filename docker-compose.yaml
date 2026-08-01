@@ -1,14 +1,22 @@
 version: '3.2'
 
 services:
-    api:
-        image: ghcr.io/engineer-man/piston
-        container_name: piston_api
-        restart: always
-        privileged: true
-        ports:
-            - 2000:2000
-        volumes:
-            - ./data/piston/packages:/piston/packages
-        tmpfs:
-            - /tmp:exec
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: custom_piston_api
+    restart: always
+    privileged: true
+    ports:
+      - 2000:2000
+    environment:
+      - PISTON_MAX_FILE_SIZE=500000000
+      - PISTON_OUTPUT_MAX_SIZE=500000000
+      - PISTON_RUN_TIMEOUT=50000
+      - PISTON_RUN_MEMORY_LIMIT=-1
+      - PISTON_DISABLE_NETWORKING=true
+    volumes:
+      - ./data/piston/packages:/piston/packages
+    tmpfs:
+      - /tmp:exec
